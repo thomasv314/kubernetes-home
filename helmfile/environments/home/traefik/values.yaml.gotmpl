@@ -1,0 +1,35 @@
+serviceType: NodePort
+service:
+  nodePorts:
+    http: 30080
+    https: 30443
+accessLogs:
+  enabled: true
+rbac:
+  enabled: true
+ssl:
+  enabled: true
+  enforced: true
+acme:
+  enabled: true
+  email: thomas@vendetta.io
+  staging: false
+  challengeType: tls-alpn-01
+  persistence:
+    size: 500Mi
+    storageClass: rook-ceph-block
+  dnsProvider:
+    name: digitalocean
+    digitalocean:
+      DO_AUTH_TOKEN: {{ .Environment.Values.digitalocean_dns_token }}
+  domains:
+    enabled: true
+    domainsList:
+    - main: "home.vendetta.io"
+    - main: "traefik.home.vendetta.io"
+    - main: "assistant.home.vendetta.io"
+dashboard:
+  enabled: true
+  domain: traefik.home.vendetta.io
+debug:
+  enabled: true

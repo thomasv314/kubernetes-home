@@ -1,0 +1,46 @@
+helmDefaults:
+  tillerNamespace: kube-system
+
+repositories:
+- name: stable
+  url: https://kubernetes-charts.storage.googleapis.com/
+- name: rook-stable
+  url: https://charts.rook.io/stable
+  
+environments:
+  home:
+    secrets:
+    - environments/home/google-dynamic-dns-update/secrets.yaml
+    - environments/home/traefik/secrets.yaml
+
+releases:
+  - name: prometheus-operator
+    namespace: kube-system
+    chart: stable/prometheus-operator 
+    values:
+    - ./environments/home/prometheus-operator/operator-values.yaml
+    - ./environments/home/prometheus-operator/prometheus-values.yaml
+    - ./environments/home/prometheus-operator/alertmanager-values.yaml
+  - name: rook-operator
+    namespace: kube-system
+    chart: rook-stable/rook-ceph
+    values:
+    - ./environments/home/rook-ceph/values.yaml
+  - name: mosquitto
+    namespace: mqtt
+    chart: ../charts/mosquitto
+  - name: home-assistant
+    namespace: ha
+    chart: stable/home-assistant
+    values:
+    - ./environments/home/home-assistant/values.yaml
+  - name: traefik
+    namespace: kube-system
+    chart: stable/traefik
+    values:
+    - ./environments/home/traefik/values.yaml.gotmpl
+  - name: google-dynamic-dns-update
+    namespace: kube-system
+    chart: ../charts/google-dynamic-dns-update
+    values:
+    - ./templates/google-dns-values.yaml.gotmpl
